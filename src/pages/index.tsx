@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { LoginForm } from "src/widgets/LoginForm";
+import { LoginWidget } from "src/widgets/LoginWidget";
 
 const StyledLoginFormPage = styled.div`
   display: flex;
@@ -10,10 +10,10 @@ const StyledLoginFormPage = styled.div`
   height: 100%;
 `;
 
-export default function Home() {
+export default function Home(): JSX.Element {
   return (
     <StyledLoginFormPage>
-      <LoginForm />
+      <LoginWidget />
     </StyledLoginFormPage>
   );
 }

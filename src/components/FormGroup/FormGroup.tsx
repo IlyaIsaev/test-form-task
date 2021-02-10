@@ -74,25 +74,28 @@ const StyledErrorSign = styled.span`
 
 export interface FormGroupProps {
   label: string;
-  valid?: boolean;
+  showError?: boolean;
   error?: string;
 }
 
 export const FormGroup: FC<FormGroupProps> = memo(function FormGroup({
   label,
   error,
-  valid,
+  showError,
   children,
 }) {
   return (
     <StyledFormGroup>
       <StyledLabel>
-        {label} {error && <StyledErrorSign>*</StyledErrorSign>}
+        {label} {showError && <StyledErrorSign>*</StyledErrorSign>}
       </StyledLabel>
       {children}
       <StyledErrorAnimation
-        in={valid === false}
-        timeout={200}
+        in={showError}
+        timeout={{
+          enter: 300,
+          exit: 0,
+        }}
         unmountOnExit
         mountOnEnter
       >

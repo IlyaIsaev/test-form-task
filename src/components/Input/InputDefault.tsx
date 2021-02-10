@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, memo } from "react";
+import { ChangeEvent, FC, memo, useCallback } from "react";
 import styled from "styled-components";
 
 export const StyledInput = styled.input`
@@ -17,14 +17,27 @@ export const StyledInput = styled.input`
 
 export interface InputDefaultProps {
   value: string;
-  type?: "text" | "password";
+  type?: "text" | "password" | "email";
   className?: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (data: { value: string }, e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const InputDefault: FC<InputDefaultProps> = memo(function InputDefault({
   type = "text",
+  onChange,
   ...props
 }) {
-  return <StyledInput type={type} {...props} />;
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      onChange(
+        {
+          value: e.target.value,
+        },
+        e
+      );
+    },
+    [onChange]
+  );
+
+  return <StyledInput type={type} onChange={handleChange} {...props} />;
 });

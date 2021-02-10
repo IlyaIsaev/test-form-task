@@ -1,7 +1,7 @@
 import { transparentize } from "polished";
 import { FC, memo, useCallback, useState } from "react";
 import styled from "styled-components";
-import { StyledInput, InputDefaultProps } from "./InputDefault";
+import { InputDefault, InputDefaultProps } from "./InputDefault";
 
 const StyledInputPassword = styled.div`
   position: relative;
@@ -35,7 +35,7 @@ const StyledShowPassButton = styled.div`
   }
 `;
 
-const StyledInputComponent = styled(StyledInput)`
+const StyledInput = styled(InputDefault)`
   padding-right: 60px;
   position: relative;
   z-index: 1;
@@ -53,7 +53,7 @@ export const InputPassword: FC<InputPasswordProps> = memo(
 
     return (
       <StyledInputPassword>
-        <StyledInputComponent
+        <StyledInput
           value={value}
           {...props}
           type={showPassword ? "text" : "password"}

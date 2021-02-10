@@ -11,7 +11,7 @@ const StyledLabel = styled.label`
   cursor: pointer;
 `;
 
-const StyledAction = styled.label<{ checked: boolean }>`
+const StyledAction = styled.label<CheckboxProps & { changeable: boolean }>`
   width: 15px;
   height: 15px;
   background: ${({ checked, theme }) =>
@@ -20,34 +20,43 @@ const StyledAction = styled.label<{ checked: boolean }>`
   border-radius: 2px;
   margin: 0 7px 0 0;
   transition: all 0.2s ease-out 0s;
-  cursor: pointer;
+  cursor: ${({ changeable }) => (changeable ? "pointer" : "default")};
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const StyledCheckbox = styled.label<{ checked: boolean }>`
+const StyledCheckbox = styled.label<CheckboxProps & { changeable: boolean }>`
   display: inline-flex;
   align-items: center;
   color: ${({ theme }) => theme.colors.primaryLight};
   transition: all 0.2s ease-out 0s;
-  cursor: pointer;
+  cursor: ${({ changeable }) => (changeable ? "pointer" : "default")};
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-
-    ${StyledAction} {
-      background: ${({ checked, theme }) =>
-        checked ? theme.colors.primary : theme.colors.light};
-      border: 1px solid ${({ theme }) => theme.colors.primary};
+  ${({ theme, checked, changeable }) => {
+    if (!changeable) {
+      return `
+        cursor: default;
+      `;
     }
-  }
+
+    return `
+      &:hover {
+        color: ${theme.colors.primary};
+
+        ${StyledAction} {
+          background: ${checked ? theme.colors.primary : theme.colors.light};
+          border: 1px solid ${theme.colors.primary};
+        }
+      }
+    `;
+  }}
 `;
 
 export interface CheckboxProps {
   label?: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
 }
 
 export const Checkbox: FC<CheckboxProps> = memo(function Checkbox({
@@ -56,15 +65,22 @@ export const Checkbox: FC<CheckboxProps> = memo(function Checkbox({
   onChange,
 }) {
   const handleChange = useCallback(() => {
-    onChange(!checked);
+    if (onChange) {
+      onChange(!checked);
+    }
   }, [checked, onChange]);
 
+  const changeable = Boolean(onChange);
+
   return (
-    <StyledCheckbox checked={checked}>
-      <StyledAction checked={checked} onClick={handleChange}>
+    <StyledCheckbox
+      checked={checked}
+      changeable={changeable}
+      onClick={handleChange}
+    >
+      <StyledAction checked={checked} changeable={changeable}>
         <StyledCheckIcon />
       </StyledAction>
-
       {label && <StyledLabel>{label}</StyledLabel>}
     </StyledCheckbox>
   );

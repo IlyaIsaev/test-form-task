@@ -19,42 +19,81 @@ const StyledButton = styled.button`
 
 const SuccessButton = styled(StyledButton)`
   color: ${({ theme }) => theme.colors.light};
-  background: ${({ theme }) => theme.colors.success};
 
-  &:hover {
-    background: ${({ theme }) => transparentize(0.3, theme.colors.success)};
-  }
+  ${({ theme, disabled }) => {
+    if (disabled) {
+      return `
+        cursor: default;
+        background: ${theme.colors.secondary};
+      `;
+    }
 
-  &:active {
-    background: ${({ theme }) => theme.colors.success};
-  }
+    return `
+      background: ${theme.colors.success};
+
+      &:hover {
+        background: ${transparentize(0.3, theme.colors.success)};
+      }
+
+      &:active {
+        background: ${theme.colors.success};
+      }
+    `;
+  }}
 `;
 
 const DefaultButton = styled(StyledButton)`
   color: ${({ theme }) => theme.colors.dark};
   border: 1px solid ${({ theme }) => theme.colors.secondary};
-  background: ${({ theme }) => theme.colors.secondaryLight};
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.light};
-  }
+  ${({ theme, disabled }) => {
+    if (disabled) {
+      return `
+        background: ${theme.colors.secondary};
+      `;
+    }
 
-  &:active {
-    background: ${({ theme }) => theme.colors.secondaryLight};
-  }
+    return `
+      background: ${theme.colors.secondaryLight};
+
+      &:hover {
+        background: ${theme.colors.light};
+      }
+
+      &:active {
+        background: ${theme.colors.secondaryLight};
+      }
+    `;
+  }}
 `;
 
 export interface ButtonProps {
   type?: "success";
+  disabled?: boolean;
+  onClick: () => void;
 }
 
 export const Button: FC<ButtonProps> = memo(function Button({
   type,
+  disabled,
+  onClick,
   ...props
 }) {
   if (type === "success") {
-    return <SuccessButton {...props} />;
+    return (
+      <SuccessButton
+        {...props}
+        disabled={disabled}
+        onClick={disabled ? undefined : onClick}
+      />
+    );
   }
 
-  return <DefaultButton {...props} />;
+  return (
+    <DefaultButton
+      {...props}
+      disabled={disabled}
+      onClick={disabled ? undefined : onClick}
+    />
+  );
 });
