@@ -1,18 +1,21 @@
 import { transparentize } from "polished";
-import React, { FC, memo, useCallback, useState } from "react";
+import React, { FC, memo, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { restorePassword } from "src/api/restorePassword";
 import { Button } from "src/components/Button";
 import { FormGroup } from "src/components/FormGroup";
 import { Input } from "src/components/Input";
-import styled from "styled-components";
-import validate from "validate.js";
 import {
+  StyledForm,
   StyledFormFooter,
   StyledLink as SimpleLink,
-  StyledForm,
   StyledTitle,
-} from "./SignInForm";
-import { FormType } from "./types";
+} from "src/widgets/LoginWidget";
+import styled from "styled-components";
+import validate from "validate.js";
+import { RootState } from "../redux/store";
+import { FormType } from "../types";
+import { reduceToInitial, setEmailValue, showEmailError } from "./redux";
 
 const StyledText = styled.div`
   font-size: 16px;
@@ -35,13 +38,22 @@ export interface RestorePassFormProps {
 
 export const RestorePassForm: FC<RestorePassFormProps> = memo(
   function RestorePassForm({ onFormTypeChange }) {
-    const [email, setEmail] = useState({
-      value: "",
-      showError: false,
-    });
+    const dispatch = useDispatch();
+
+    const { email } = useSelector<RootState, RootState["restorePassForm"]>(
+      ({ restorePassForm }) => restorePassForm
+    );
+
+    useEffect(() => {
+      return () => {
+        dispatch(reduceToInitial());
+      };
+    }, []);
 
     const handleEmailChange = useCallback(({ value }: { value: string }) => {
-      setEmail((prevValue) => ({ ...prevValue, value, showError: false }));
+      dispatch(setEmailValue(value));
+
+      dispatch(showEmailError(false));
     }, []);
 
     const handleRestorePassClick = useCallback(async () => {
@@ -63,12 +75,11 @@ export const RestorePassForm: FC<RestorePassFormProps> = memo(
       }
 
       if (!emailValid) {
-        setEmail((prevValue) => ({
-          ...prevValue,
-          showError: true,
-        }));
+        if (!emailValid) {
+          dispatch(showEmailError(true));
+        }
       }
-    }, [email.value]);
+    }, [email]);
 
     const handleSignInClick = useCallback(() => {
       onFormTypeChange(FormType.signIn);

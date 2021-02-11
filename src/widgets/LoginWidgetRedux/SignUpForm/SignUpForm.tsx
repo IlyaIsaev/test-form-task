@@ -1,11 +1,26 @@
-import React, { FC, memo, useCallback, useState } from "react";
+import React, { FC, memo, useCallback, useEffect } from "react";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { signUp } from "src/api/signUp";
-import {Button} from "src/components/Button";
+import { Button } from "src/components/Button";
 import { FormGroup } from "src/components/FormGroup";
 import { Input } from "src/components/Input";
+import {
+  StyledForm,
+  StyledFormFooter,
+  StyledTitle,
+} from "src/widgets/LoginWidget";
 import validate from "validate.js";
-import { StyledFormFooter, StyledForm, StyledTitle } from "./SignInForm";
-import { FormType } from "./types";
+import { RootState } from "../redux/store";
+import { FormType } from "../types";
+import {
+  reduceToInitial,
+  setEmailValue,
+  setPasswordCopyValue,
+  setPasswordValue,
+  showEmailError,
+  showPasswordCopyError,
+  showPasswordError,
+} from "./redux";
 
 export interface SignUpFormProps {
   onFormTypeChange: (type: FormType) => void;
@@ -14,35 +29,39 @@ export interface SignUpFormProps {
 export const SignUpForm: FC<SignUpFormProps> = memo(function SignUpForm({
   onFormTypeChange,
 }) {
-  const [email, setEmail] = useState({
-    value: "",
-    showError: false,
-  });
+  const dispatch = useDispatch();
 
-  const [password, setPassword] = useState({
-    value: "",
-    showError: false,
-  });
+  const { email, password, passwordCopy } = useSelector<
+    RootState,
+    RootState["signUpForm"]
+  >(({ signUpForm }) => signUpForm);
 
-  const [passwordCopy, setPasswordCopy] = useState({
-    value: "",
-    showError: false,
-  });
+  useEffect(() => {
+    return () => {
+      dispatch(reduceToInitial());
+    };
+  }, []);
 
   const handleEmailChange = useCallback(({ value }: { value: string }) => {
-    setEmail((prevValue) => ({ ...prevValue, value, showError: false }));
+    dispatch(setEmailValue(value));
+
+    dispatch(showEmailError(false));
   }, []);
 
   const handlePasswordChange = useCallback(({ value }) => {
-    setPassword((prevValue) => ({ ...prevValue, value, showError: false }));
+    dispatch(setPasswordValue(value));
 
-    setPasswordCopy((prevValue) => ({ ...prevValue, showError: false }));
+    dispatch(showPasswordError(false));
+
+    dispatch(showPasswordCopyError(false));
   }, []);
 
   const handlePasswordCopyChange = useCallback(({ value }) => {
-    setPassword((prevValue) => ({ ...prevValue, showError: false }));
+    dispatch(setPasswordCopyValue(value));
 
-    setPasswordCopy((prevValue) => ({ ...prevValue, value, showError: false }));
+    dispatch(showPasswordError(false));
+
+    dispatch(showPasswordCopyError(false));
   }, []);
 
   const handleSignUpClick = useCallback(async () => {
@@ -67,18 +86,15 @@ export const SignUpForm: FC<SignUpFormProps> = memo(function SignUpForm({
     }
 
     if (!emailValid) {
-      setEmail((prevValue) => ({
-        ...prevValue,
-        showError: true,
-      }));
+      dispatch(showEmailError(true));
     }
 
     if (!passMatch) {
-      setPassword((prevValue) => ({ ...prevValue, showError: true }));
+      dispatch(showPasswordError(true));
 
-      setPasswordCopy((prevValue) => ({ ...prevValue, showError: true }));
+      dispatch(showPasswordCopyError(true));
     }
-  }, [email.value, password.value, passwordCopy]);
+  }, [email, password.value, passwordCopy.value]);
 
   const handleSignInClick = useCallback(() => {
     onFormTypeChange(FormType.signIn);

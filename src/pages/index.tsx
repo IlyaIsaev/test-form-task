@@ -1,8 +1,9 @@
+import Link from "next/link";
 import React from "react";
+import { Button } from "src/components/Button";
 import styled from "styled-components";
-import { LoginWidget } from "src/widgets/LoginWidget";
 
-const StyledLoginFormPage = styled.div`
+export const StyledLoginFormPage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,7 +14,13 @@ const StyledLoginFormPage = styled.div`
 export default function Home(): JSX.Element {
   return (
     <StyledLoginFormPage>
-      <LoginWidget />
+      <Link href="/only-hooks-version">
+        <Button type="success">Only hooks version</Button>
+      </Link>
+      &nbsp; &nbsp; &nbsp;
+      <Link href="/redux-version">
+        <Button type="success">Redux version</Button>
+      </Link>
     </StyledLoginFormPage>
   );
 }

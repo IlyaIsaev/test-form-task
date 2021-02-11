@@ -1,1 +1,2 @@
-export { LoginWidget } from "./LoginWidget";
+export * from "./LoginWidget";
+export * from "./SignInForm";

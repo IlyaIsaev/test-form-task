@@ -1,56 +1,28 @@
-import React, { FC, memo, useCallback, useState } from "react";
+import React, { FC, memo, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { signIn } from "src/api/signIn";
 import { Button } from "src/components/Button";
 import { Checkbox } from "src/components/Checkbox";
 import { FormGroup } from "src/components/FormGroup";
 import { Input } from "src/components/Input";
-import styled from "styled-components";
+import {
+  StyledActionsRow,
+  StyledForm,
+  StyledFormFooter,
+  StyledLink,
+  StyledTitle,
+} from "src/widgets/LoginWidget";
 import validate from "validate.js";
-import { FormType } from "./types";
-
-export const StyledForm = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-export const StyledTitle = styled.div`
-  font-size: 20px;
-  align-self: flex-start;
-  margin: 0 0 15px;
-`;
-
-export const StyledActionsRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-self: stretch;
-  margin: 20px 0 0;
-`;
-
-export const StyledFormFooter = styled.div`
-  align-self: stretch;
-  display: grid;
-  row-gap: 10px;
-  grid-template-columns: 100%;
-  grid-auto-rows: auto;
-  justify-items: stretch;
-  margin: 20px 0 0;
-`;
-
-export const StyledLink = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.primary};
-  cursor: pointer;
-  transition: all 0.2s ease-out 0s;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primaryLight};
-  }
-
-  &:active {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
+import { RootState } from "../redux/store";
+import { FormType } from "../types";
+import {
+  reduceToInitial,
+  setEmailValue,
+  setKeepSign,
+  setPasswordValue,
+  showEmailError,
+  showPasswordError,
+} from "./redux";
 
 export interface SignInFormProps {
   onFormTypeChange: (type: FormType) => void;
@@ -59,35 +31,37 @@ export interface SignInFormProps {
 export const SignInForm: FC<SignInFormProps> = memo(function SignInForm({
   onFormTypeChange,
 }) {
-  const [email, setEmail] = useState({
-    value: "",
-    showError: false,
-  });
+  const dispatch = useDispatch();
 
-  const [password, setPassword] = useState({
-    value: "",
-    showError: false,
-  });
+  const { email, password, keepSign } = useSelector<
+    RootState,
+    RootState["signInForm"]
+  >(({ signInForm }) => signInForm);
 
-  const [keepSign, setKeepSign] = useState(false);
+  useEffect(() => {
+    return () => {
+      dispatch(reduceToInitial());
+    };
+  }, []);
 
   const handleKeepSignClick = useCallback((value) => {
-    setKeepSign(value);
+    dispatch(setKeepSign(value));
   }, []);
 
   const handleEmailChange = useCallback(({ value }: { value: string }) => {
-    setEmail((prevValue) => ({ ...prevValue, value, showError: false }));
+    dispatch(setEmailValue(value));
+
+    dispatch(showEmailError(false));
   }, []);
 
   const handlePasswordChange = useCallback(({ value }) => {
-    setPassword((prevValue) => ({ ...prevValue, value }));
+    dispatch(setPasswordValue(value));
+
+    dispatch(showPasswordError(false));
   }, []);
 
   const handleSignInClick = useCallback(async () => {
-    const emailValid = !validate(
-      { data: email.value },
-      { data: { email: true } }
-    );
+    const emailValid = !validate({ data: email }, { data: { email: true } });
 
     if (emailValid) {
       try {
@@ -104,10 +78,7 @@ export const SignInForm: FC<SignInFormProps> = memo(function SignInForm({
     }
 
     if (!emailValid) {
-      setEmail((prevValue) => ({
-        ...prevValue,
-        showError: true,
-      }));
+      dispatch(showEmailError(true));
     }
   }, [email.value, password.value, keepSign]);
 

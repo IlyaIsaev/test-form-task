@@ -1,27 +1,20 @@
-import React, { FC, memo, useCallback, useState } from "react";
-import { Logo } from "src/components/Logo";
-import styled from "styled-components";
-import { SignUpForm } from "./SignUpForm";
-import { SignInForm } from "./SignInForm";
-import { FormType } from "./types";
+import React, { FC, memo, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { StyledLoginWidget, StyledLogo } from "../LoginWidget";
+import { setFormType } from "./redux/formTypeSlice";
+import { RootState } from "./redux/store";
 import { RestorePassForm } from "./RestorePassForm";
-
-export const StyledLoginWidget = styled.div`
-  width: 450px;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const StyledLogo = styled(Logo)`
-  align-self: center;
-  margin: 0 0 40px;
-`;
+import { SignInForm } from "./SignInForm";
+import { SignUpForm } from "./SignUpForm";
+import { FormType } from "./types";
 
 export const LoginWidget: FC = memo(function LoginWidget() {
-  const [formType, setFormType] = useState<FormType>(FormType.signIn);
+  const dispatch = useDispatch();
+
+  const formType = useSelector<RootState>(({ formType }) => formType);
 
   const handleFormTypeChange = useCallback((type: FormType) => {
-    setFormType(type);
+    dispatch(setFormType(type));
   }, []);
 
   return (

@@ -70,7 +70,7 @@ const DefaultButton = styled(StyledButton)`
 export interface ButtonProps {
   type?: "success";
   disabled?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const Button: FC<ButtonProps> = memo(function Button({
