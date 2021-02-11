@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { signUp } from "src/api/signUp";
 import { isEmailValid } from "src/widgets/LoginWidget";
 import { RootState } from "../redux/store";
 import { FormType } from "../types";
@@ -12,6 +11,7 @@ import {
   showEmailError,
   showPasswordCopyError,
   showPasswordError,
+  signUp,
 } from "./redux";
 
 export interface UseSignUpFormData {
@@ -62,16 +62,7 @@ export const useSignUpForm = ({ onFormTypeChange }: UseSignUpFormData) => {
     const passMatch = password.value === passwordCopy.value;
 
     if (emailValid && passMatch) {
-      try {
-        const result = await signUp({
-          email: email.value,
-          password: password.value,
-        });
-
-        console.log(result);
-      } catch (e) {
-        console.log(e);
-      }
+      dispatch(signUp({ email: email.value, password: password.value }));
     }
 
     if (!emailValid) {

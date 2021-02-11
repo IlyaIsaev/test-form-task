@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { formBaseState, getFormBaseReducers } from "../../SignInForm";
 
-const initialState = {
+export const initialState = {
   ...formBaseState,
   passwordCopy: {
     value: "",

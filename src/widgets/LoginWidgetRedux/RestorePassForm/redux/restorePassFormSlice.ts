@@ -3,7 +3,7 @@ import { formBaseState, getFormBaseReducers } from "../../SignInForm";
 
 const { email } = formBaseState;
 
-const initialState = { email };
+export const initialState = { email };
 
 const {
   reduceToInitial: reduceToInitialReducer,

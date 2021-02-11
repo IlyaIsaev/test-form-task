@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { signIn } from "src/api/signIn";
 import { isEmailValid } from "src/widgets/LoginWidget";
 import { RootState } from "../redux/store";
 import { FormType } from "../types";
@@ -11,6 +10,7 @@ import {
   setPasswordValue,
   showEmailError,
   showPasswordError,
+  signIn,
 } from "./redux";
 
 export interface UseSignInFormData {
@@ -53,17 +53,9 @@ export const useSignInForm = ({ onFormTypeChange }: UseSignInFormData) => {
     const emailValid = isEmailValid(email.value);
 
     if (emailValid) {
-      try {
-        const result = await signIn({
-          email: email.value,
-          password: password.value,
-          keepSign,
-        });
-
-        console.log(result);
-      } catch (e) {
-        console.log(e);
-      }
+      dispatch(
+        signIn({ email: email.value, password: password.value, keepSign })
+      );
     }
 
     if (!emailValid) {

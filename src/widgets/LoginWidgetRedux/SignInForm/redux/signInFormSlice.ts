@@ -13,7 +13,7 @@ export const formBaseState = {
 
 export type FormBaseState = typeof formBaseState;
 
-const initialState = {
+export const initialState = {
   ...formBaseState,
   keepSign: false,
 };

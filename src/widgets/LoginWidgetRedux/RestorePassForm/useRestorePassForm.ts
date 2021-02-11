@@ -1,10 +1,14 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { restorePassword } from "src/api/restorePassword";
 import { isEmailValid } from "src/widgets/LoginWidget";
 import { RootState } from "../redux/store";
 import { FormType } from "../types";
-import { reduceToInitial, setEmailValue, showEmailError } from "./redux";
+import {
+  restorePassword,
+  reduceToInitial,
+  setEmailValue,
+  showEmailError,
+} from "./redux";
 
 export interface UseRestorePassFormData {
   onFormTypeChange: (type: FormType) => void;
@@ -37,15 +41,7 @@ export const useRestorePassForm = ({
     const emailValid = isEmailValid(email.value);
 
     if (emailValid) {
-      try {
-        const result = await restorePassword({
-          email: email.value,
-        });
-
-        console.log(result);
-      } catch (e) {
-        console.log(e);
-      }
+      dispatch(restorePassword({ email: email.value }));
     }
 
     if (!emailValid) {
