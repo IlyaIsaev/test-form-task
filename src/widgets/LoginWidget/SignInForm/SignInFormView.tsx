@@ -81,7 +81,7 @@ export const SignInFormView: FC<SignInFormViewProps> = memo(
           />
         </FormGroup>
 
-        <FormGroup label="Password">
+        <FormGroup label="Password" error="Couldn't be empty">
           <Input
             type="password"
             value={password.value}

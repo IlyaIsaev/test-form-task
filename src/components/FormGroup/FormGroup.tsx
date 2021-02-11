@@ -87,7 +87,7 @@ export const FormGroup: FC<FormGroupProps> = memo(function FormGroup({
   return (
     <StyledFormGroup>
       <StyledLabel>
-        {label} {showError && <StyledErrorSign>*</StyledErrorSign>}
+        {label} {error && <StyledErrorSign>*</StyledErrorSign>}
       </StyledLabel>
       {children}
       <StyledErrorAnimation
