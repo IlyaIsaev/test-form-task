@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { Button } from "src/components/Button";
 import styled from "styled-components";
 
 export const StyledLoginFormPage = styled.div`
@@ -15,11 +14,11 @@ export default function Home(): JSX.Element {
   return (
     <StyledLoginFormPage>
       <Link href="/only-hooks-version">
-        <Button type="success">Only hooks version</Button>
+        <a>Only hooks version</a>
       </Link>
       &nbsp; &nbsp; &nbsp;
       <Link href="/redux-version">
-        <Button type="success">Redux version</Button>
+        <a>Redux version</a>
       </Link>
     </StyledLoginFormPage>
   );

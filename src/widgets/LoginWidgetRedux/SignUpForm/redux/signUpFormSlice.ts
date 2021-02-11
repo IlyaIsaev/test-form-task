@@ -1,46 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { formBaseState, getFormBaseReducers } from "../../SignInForm";
 
 const initialState = {
-  email: {
-    value: "",
-    showError: false,
-  },
-  password: {
-    value: "",
-    showError: false,
-  },
+  ...formBaseState,
   passwordCopy: {
     value: "",
     showError: false,
   },
-  keepSign: false,
 };
 
 const signUpFormSlice = createSlice({
   name: "signUpForm",
   initialState,
   reducers: {
-    reduceToInitial: () => initialState,
-    setEmailValue: (state, { payload }) => {
-      state.email.value = payload;
-    },
-    setPasswordValue: (state, { payload }) => {
-      state.password.value = payload;
-    },
+    ...getFormBaseReducers(initialState),
     setPasswordCopyValue: (state, { payload }) => {
       state.passwordCopy.value = payload;
     },
-    showEmailError: (state, { payload }) => {
-      state.email.showError = payload;
-    },
-    showPasswordError: (state, { payload }) => {
-      state.password.showError = payload;
-    },
     showPasswordCopyError: (state, { payload }) => {
       state.passwordCopy.showError = payload;
-    },
-    setKeepSign: (state, { payload }) => {
-      state.keepSign = payload;
     },
   },
 });
@@ -53,7 +31,6 @@ export const {
   showEmailError,
   showPasswordError,
   showPasswordCopyError,
-  setKeepSign,
 } = signUpFormSlice.actions;
 
 export const signUpFormReducer = signUpFormSlice.reducer;

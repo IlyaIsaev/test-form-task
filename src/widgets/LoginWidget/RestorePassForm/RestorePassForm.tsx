@@ -1,5 +1,5 @@
 import React, { FC, memo } from "react";
-import { RestorePassFormView } from "src/widgets/LoginWidget";
+import { RestorePassFormView } from "./RestorePassFormView";
 import {
   useRestorePassForm,
   UseRestorePassFormData,

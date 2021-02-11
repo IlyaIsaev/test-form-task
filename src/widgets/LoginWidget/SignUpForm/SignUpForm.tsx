@@ -1,5 +1,5 @@
 import React, { FC, memo } from "react";
-import { SignUpFormView } from "src/widgets/LoginWidget";
+import { SignUpFormView } from "./SignUpFormView";
 import { useSignUpForm, UseSignUpFormData } from "./useSignUpForm";
 
 export type SignUpFormProps = UseSignUpFormData;

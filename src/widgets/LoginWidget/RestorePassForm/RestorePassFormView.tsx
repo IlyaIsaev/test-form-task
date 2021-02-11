@@ -1,18 +1,16 @@
 import { transparentize } from "polished";
-import React, { FC, memo, useCallback, useState } from "react";
-import { restorePassword } from "src/api/restorePassword";
+import React, { FC, memo } from "react";
 import { Button } from "src/components/Button";
 import { FormGroup } from "src/components/FormGroup";
 import { Input } from "src/components/Input";
 import styled from "styled-components";
-import validate from "validate.js";
 import {
+  StyledForm,
   StyledFormFooter,
   StyledLink as SimpleLink,
-  StyledForm,
   StyledTitle,
-} from "./SignInForm";
-import { FormType } from "./types";
+} from "../SignInForm";
+import { UseRestorePassForm } from "./useRestorePassForm";
 
 const StyledText = styled.div`
   font-size: 16px;
@@ -29,57 +27,17 @@ const StyledLink = styled(SimpleLink)`
   font-size: 18px;
 `;
 
-export interface RestorePassFormProps {
-  onFormTypeChange: (type: FormType) => void;
-}
+export type RestorePassFormViewProps = UseRestorePassForm;
 
-export const RestorePassForm: FC<RestorePassFormProps> = memo(
-  function RestorePassForm({ onFormTypeChange }) {
-    const [email, setEmail] = useState({
-      value: "",
-      showError: false,
-    });
-
-    const handleEmailChange = useCallback(({ value }: { value: string }) => {
-      setEmail((prevValue) => ({ ...prevValue, value, showError: false }));
-    }, []);
-
-    const handleRestorePassClick = useCallback(async () => {
-      const emailValid = !validate(
-        { data: email.value },
-        { data: { email: true } }
-      );
-
-      if (emailValid) {
-        try {
-          const result = await restorePassword({
-            email: email.value,
-          });
-
-          console.log(result);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-
-      if (!emailValid) {
-        setEmail((prevValue) => ({
-          ...prevValue,
-          showError: true,
-        }));
-      }
-    }, [email.value]);
-
-    const handleSignInClick = useCallback(() => {
-      onFormTypeChange(FormType.signIn);
-    }, [onFormTypeChange]);
-
-    const handleSignUpClick = useCallback(() => {
-      onFormTypeChange(FormType.signUp);
-    }, [onFormTypeChange]);
-
-    const disableSignInButton = !email.value.length;
-
+export const RestorePassFormView: FC<RestorePassFormViewProps> = memo(
+  function RestorePassFormView({
+    email,
+    disableSubmit,
+    handleEmailChange,
+    handleSignInClick,
+    handleRestorePassClick,
+    handleSignUpClick,
+  }) {
     return (
       <StyledForm>
         <StyledTitle>Forgot Your Password?</StyledTitle>
@@ -103,7 +61,7 @@ export const RestorePassForm: FC<RestorePassFormProps> = memo(
         <StyledFormFooter>
           <Button
             type="success"
-            disabled={disableSignInButton}
+            disabled={disableSubmit}
             onClick={handleRestorePassClick}
           >
             Send

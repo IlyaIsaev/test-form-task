@@ -1,28 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { formBaseState, getFormBaseReducers } from "../../SignInForm";
 
-const initialState = {
-  email: {
-    value: "",
-    showError: false,
-  },
-  password: {
-    value: "",
-    showError: false,
-  },
-  keepSign: false,
-};
+const { email } = formBaseState;
+
+const initialState = { email };
+
+const {
+  reduceToInitial: reduceToInitialReducer,
+  setEmailValue: setEmailValueReducer,
+  showEmailError: showEmailErrorReducer,
+} = getFormBaseReducers(initialState);
 
 const restorePassFormSlice = createSlice({
   name: "restorePassForm",
   initialState,
   reducers: {
-    reduceToInitial: () => initialState,
-    setEmailValue: (state, { payload }) => {
-      state.email.value = payload;
-    },
-    showEmailError: (state, { payload }) => {
-      state.email.showError = payload;
-    },
+    reduceToInitial: reduceToInitialReducer,
+    setEmailValue: setEmailValueReducer,
+    showEmailError: showEmailErrorReducer,
   },
 });
 
